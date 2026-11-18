@@ -15,8 +15,7 @@ pipeline {
         CONTAINER  = 'midterm-api'
         DEPS_IMAGE = 'midterm-fa22-bai-001-deps'
         SENDER     = 'ab3296726@gmail.com'
-        // TODO before grading: change back to 'qasimalik@gmail.com, ab3296726@gmail.com'
-        RECIPIENTS = 'ab3296726@gmail.com'
+        RECIPIENTS = 'qasimalik@gmail.com, ab3296726@gmail.com'
         API_URL    = 'http://localhost:8000'
     }
 
