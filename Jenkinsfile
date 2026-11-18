@@ -12,6 +12,7 @@ pipeline {
     environment {
         STUDENT_ID = 'FA22-BAI-001'
         IMAGE      = 'midterm-fa22-bai-001'
+        HUB_IMAGE  = 'aen8aen/midterm-fa22-bai-001'
         CONTAINER  = 'midterm-api'
         DEPS_IMAGE = 'midterm-fa22-bai-001-deps'
         SENDER     = 'ab3296726@gmail.com'
@@ -74,6 +75,17 @@ pipeline {
                 '''
             }
         }
+
+        stage('Push to Docker Hub') {
+            steps {
+                sh '''
+                  docker tag $IMAGE:$BUILD_NUMBER $HUB_IMAGE:$BUILD_NUMBER
+                  docker tag $IMAGE:$BUILD_NUMBER $HUB_IMAGE:latest
+                  docker push $HUB_IMAGE:$BUILD_NUMBER
+                  docker push $HUB_IMAGE:latest
+                '''
+            }
+        }
     }
 
     post {
@@ -90,6 +102,7 @@ Job: ${env.JOB_NAME} #${env.BUILD_NUMBER}
 Result: ${currentBuild.currentResult}
 Commit: ${env.GIT_COMMIT}
 API: http://13.51.196.90:8000/metrics
+Docker image: aen8aen/midterm-fa22-bai-001:${env.BUILD_NUMBER}
 
 Model metrics:
 ${metrics}
