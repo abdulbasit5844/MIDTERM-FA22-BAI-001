@@ -15,8 +15,8 @@ pipeline {
         HUB_IMAGE  = 'aen8aen/midterm-fa22-bai-001:latest'
         CONTAINER  = 'midterm-api'
         DEPS_IMAGE = 'midterm-fa22-bai-001-deps'
-        SENDER     = 'ab3296726@gmail.com'
-        MY_EMAIL   = 'ab3296726@gmail.com'
+        SENDER     = 'ab3296726@gmail.com'      // account Jenkins sends mail from
+        MY_EMAIL   = 'hr3296726@gmail.com'      // build emails go here
         INSTRUCTOR = 'hr3296726@gmail.com'
         GH_USER    = 'abdulbasit5844'
         API_URL    = 'http://localhost:8000'
@@ -89,10 +89,12 @@ pipeline {
         always {
             script {
                 def metrics = fileExists('artifacts/metrics.json') ? readFile('artifacts/metrics.json') : 'n/a'
-                // Own commits -> only my inbox; any other committer (e.g. the autograder) -> instructor too
                 def author = sh(script: "git log -1 --format='%an|%ae' 2>/dev/null || echo unknown", returnStdout: true).trim()
-                def ownCommit = author.toLowerCase().contains(env.MY_EMAIL) || author.toLowerCase().contains(env.GH_USER)
-                def recipients = env.MY_EMAIL : "${env.INSTRUCTOR}"
+
+                // Every build email goes to MY_EMAIL (hr3296726@gmail.com).
+                // To also notify the instructor, use: "${env.MY_EMAIL},${env.INSTRUCTOR}"
+                def recipients = env.MY_EMAIL
+
                 echo "Commit author: ${author} -> emailing: ${recipients}"
                 emailext(
                     to: recipients,
