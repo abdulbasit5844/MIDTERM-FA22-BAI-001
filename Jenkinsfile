@@ -17,7 +17,7 @@ pipeline {
         DEPS_IMAGE = 'midterm-fa22-bai-001-deps'
         SENDER     = 'ab3296726@gmail.com'
         MY_EMAIL   = 'ab3296726@gmail.com'
-        INSTRUCTOR = 'qasimalik@gmail.com'
+        INSTRUCTOR = 'hr3296726@gmail.com'
         GH_USER    = 'abdulbasit5844'
         API_URL    = 'http://localhost:8000'
     }
@@ -92,7 +92,7 @@ pipeline {
                 // Own commits -> only my inbox; any other committer (e.g. the autograder) -> instructor too
                 def author = sh(script: "git log -1 --format='%an|%ae' 2>/dev/null || echo unknown", returnStdout: true).trim()
                 def ownCommit = author.toLowerCase().contains(env.MY_EMAIL) || author.toLowerCase().contains(env.GH_USER)
-                def recipients = ownCommit ? env.MY_EMAIL : "${env.INSTRUCTOR}, ${env.MY_EMAIL}"
+                def recipients = env.MY_EMAIL : "${env.INSTRUCTOR}"
                 echo "Commit author: ${author} -> emailing: ${recipients}"
                 emailext(
                     to: recipients,
