@@ -16,9 +16,9 @@ pipeline {
         CONTAINER  = 'midterm-api'
         DEPS_IMAGE = 'midterm-fa22-bai-001-deps'
         SENDER     = 'ab3296726@gmail.com'      // account Jenkins sends mail from
-        MY_EMAIL   = 'hr3296726@gmail.com'      // build emails go here
-        INSTRUCTOR = 'qasimalik@gmail.com'
-        GH_USER    = 'abdulbasit5844'
+        MY_EMAIL   = 'hr3296726@gmail.com'      // student inbox
+        INSTRUCTOR = 'qasimalik@gmail.com'      // instructor inbox
+        GH_USER    = 'abdulbasit5844'           // student's GitHub username
         API_URL    = 'http://localhost:8000'
     }
 
@@ -89,11 +89,22 @@ pipeline {
         always {
             script {
                 def metrics = fileExists('artifacts/metrics.json') ? readFile('artifacts/metrics.json') : 'n/a'
-                def author = sh(script: "git log -1 --format='%an|%ae' 2>/dev/null || echo unknown", returnStdout: true).trim()
 
-                // Every build email goes to MY_EMAIL (hr3296726@gmail.com).
-                // To also notify the instructor, use: "${env.MY_EMAIL},${env.INSTRUCTOR}"
+                // author name | author email | committer name | committer email of the latest commit
+                def author = sh(script: "git log -1 --format='%an|%ae|%cn|%ce' 2>/dev/null || echo unknown", returnStdout: true).trim()
+                def a = author.toLowerCase()
+
+                // Commit made by the student (GitHub username or student email)
+                def ownCommit = a.contains(env.GH_USER.toLowerCase()) || a.contains(env.MY_EMAIL.toLowerCase())
+                // Commit made by the instructor (matched by email)
+                def instructorCommit = a.contains(env.INSTRUCTOR.toLowerCase())
+
+                // Student always gets the email.
+                // Instructor gets it when he pushes, or when anyone other than the student pushes.
                 def recipients = env.MY_EMAIL
+                if (instructorCommit || !ownCommit) {
+                    recipients = "${env.MY_EMAIL},${env.INSTRUCTOR}"
+                }
 
                 echo "Commit author: ${author} -> emailing: ${recipients}"
                 emailext(
