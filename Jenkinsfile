@@ -17,7 +17,7 @@ pipeline {
         DEPS_IMAGE = 'midterm-fa22-bai-001-deps'
         SENDER     = 'ab3296726@gmail.com'      // account Jenkins sends mail from
         MY_EMAIL   = 'hr3296726@gmail.com'      // build emails go here
-        INSTRUCTOR = 'hr3296726@gmail.com'
+        INSTRUCTOR = 'qasimalik@gmail.com'
         GH_USER    = 'abdulbasit5844'
         API_URL    = 'http://localhost:8000'
     }
